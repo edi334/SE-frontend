@@ -20,6 +20,7 @@ import {FormCardComponent} from './pages/forms/components/form-card/form-card.co
 import {CardModule} from 'primeng/card';
 import {QuestionComponent} from './pages/question/question.component';
 import {RadioButtonModule} from 'primeng/radiobutton';
+import {DialogModule} from 'primeng/dialog';
 
 @NgModule({
   declarations: [
@@ -31,22 +32,23 @@ import {RadioButtonModule} from 'primeng/radiobutton';
     FormCardComponent,
     QuestionComponent
   ],
-  imports: [
-    BrowserModule,
-    CommonModule,
-    BrowserAnimationsModule,
-    AppRoutingModule,
-    HttpClientModule,
-    MegaMenuModule,
-    ReactiveFormsModule,
-    InputTextModule,
-    ToastModule,
-    ButtonModule,
-    ProgressSpinnerModule,
-    CardModule,
-    RadioButtonModule,
-    FormsModule
-  ],
+    imports: [
+        BrowserModule,
+        CommonModule,
+        BrowserAnimationsModule,
+        AppRoutingModule,
+        HttpClientModule,
+        MegaMenuModule,
+        ReactiveFormsModule,
+        InputTextModule,
+        ToastModule,
+        ButtonModule,
+        ProgressSpinnerModule,
+        CardModule,
+        RadioButtonModule,
+        FormsModule,
+        DialogModule
+    ],
   providers: [],
   bootstrap: [AppComponent]
 })

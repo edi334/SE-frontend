@@ -1,1 +1,9 @@
-<p>home works!</p>
+<div class="criteria-container">
+  <p-progressSpinner ariaLabel="loading" *ngIf="loading"></p-progressSpinner>
+  <ng-container *ngIf="!loading">
+    <h2>Rezultate finale:</h2>
+    <li *ngFor="let criteria of userCriteria">
+      {{criteria.criteria_name}}: {{criteria.value}}
+    </li>
+  </ng-container>
+</div>

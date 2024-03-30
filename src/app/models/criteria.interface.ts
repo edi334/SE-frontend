@@ -13,3 +13,8 @@ export interface ICriteriaCheck {
 export interface ICriteriaResponse {
   message: string;
 }
+
+export interface IUserCriteria {
+  criteria_name: string;
+  value: number;
+}

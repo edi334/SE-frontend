@@ -3,6 +3,8 @@ import {QuestionService} from '../../services/question.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {IAnswer, IQuestionAndAnswers} from '../../models/question.interface';
 import {CriteriaService} from '../../services/criteria.service';
+import {IRecommendation} from '../../models/form.interface';
+import {FormService} from '../../services/form.service';
 
 @Component({
   selector: 'app-question',
@@ -14,8 +16,12 @@ export class QuestionComponent implements OnInit {
   selectedAnswer: IAnswer | null = null;
   loading = true;
   formTitle: string = '';
+  dialogVisible = false;
+  nextForm: IRecommendation | null = null;
+  finalMessage: string = '';
 
   constructor(
+    private readonly _formService: FormService,
     private readonly _questionService: QuestionService,
     private readonly _criteriaService: CriteriaService,
     private readonly _route: ActivatedRoute,
@@ -33,13 +39,29 @@ export class QuestionComponent implements OnInit {
   }
 
   async nextQuestion(): Promise<void> {
+    await this._criteriaService.updateCriteria(this.formTitle, this.selectedAnswer!.criteria_id);
     if (this.questionAndAnswers.question.check_required === 0) {
-      await this._criteriaService.updateCriteria(this.formTitle, this.selectedAnswer!.criteria_id);
       await this._router.navigate(['/question', this.formTitle, this.questionAndAnswers.question.next_question]);
+      location.reload();
     } else {
-      const nextForm = await this._criteriaService.checkCriteria(this.formTitle, this.questionAndAnswers.question.check_required);
-      console.log(nextForm);
+      const response = await this._criteriaService.checkCriteria(this.formTitle, this.questionAndAnswers.question.check_required);
+      if (this.questionAndAnswers.question.check_required === 3) {
+        const arrayResponse = <string[]> response;
+        this.finalMessage = arrayResponse[0];
+      } else {
+        this.nextForm = <IRecommendation> response;
+      }
+      this.dialogVisible = true;
     }
+  }
+
+  async goToNextForm(): Promise<void> {
+    const formResult = await this._formService.startForm(this.nextForm!.form_title);
+    await this._router.navigate(['/question', formResult.title, formResult.first_question]);
     location.reload();
+  }
+
+  async goHome(): Promise<void> {
+    await this._router.navigate(['']);
   }
 }

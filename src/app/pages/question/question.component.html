@@ -9,6 +9,19 @@
     <button style="margin-top: 10px" type="submit" pButton
             [label]="questionAndAnswers.question.check_required === 0 ? 'Next' : 'Finish'"
             (click)="nextQuestion()"
+            [disabled]="selectedAnswer?.criteria_id === null"
     ></button>
+    <p-dialog [(visible)]="dialogVisible" [style]="{width: '50vw'}">
+      <ng-container *ngIf="questionAndAnswers.question.check_required !== 3">
+        <p>{{nextForm?.additional_text}}</p>
+        <p style="font-size: 16px;"><b>{{nextForm?.form_title}}</b></p>
+        <p>{{nextForm?.form_description}}</p>
+        <button style="margin-top: 10px" type="submit" pButton label="Continue" (click)="goToNextForm()"></button>
+      </ng-container>
+      <ng-container *ngIf="questionAndAnswers.question.check_required === 3">
+        <p>{{finalMessage}}</p>
+        <button style="margin-top: 10px" type="submit" pButton label="Home" (click)="goHome()"></button>
+      </ng-container>
+    </p-dialog>
   </ng-container>
 </div>
