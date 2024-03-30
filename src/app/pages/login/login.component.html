@@ -1,0 +1,17 @@
+<form [formGroup]="form" (ngSubmit)="submit()">
+    <div class="form-field">
+      <label for="email">Email</label>
+      <input pInputText id="email" aria-describedby="email-help" formControlName="email" />
+      <small class="p-error" *ngIf="form.controls['email'].invalid && form.controls['email'].dirty">
+        Invalid email format.
+      </small>
+    </div>
+    <div class="form-field">
+      <label for="email">Password</label>
+      <input pInputText type="password" id="password" aria-describedby="password-help" formControlName="password" />
+      <small class="p-error" *ngIf="form.controls['password'].errors?.['minlength'] && form.controls['password'].dirty">
+        Password must be at least 6 characters.
+      </small>
+  </div>
+  <button style="margin-top: 15px" type="submit" pButton label="Submit" [disabled]="!form.valid"></button>
+</form>

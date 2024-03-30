@@ -2,7 +2,7 @@ import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {StorageMap} from '@ngx-pwa/local-storage';
 import {Router} from '@angular/router';
-import {ISession} from '../models/session.interface';
+import {ILoginRequest, ILoginResponse} from '../models/login.interface';
 import {firstValueFrom, map, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
 
@@ -11,10 +11,8 @@ import {environment} from '../../environments/environment';
 })
 export class AuthService {
   private _token?: string;
-  private readonly _baseUrl= environment.apiUrl + '/api/auth';
-  private _session?: ISession;
+  private readonly _baseUrl= environment.apiUrl + '/account';
   private static readonly tokenStorageKey: string = 'token';
-  private static readonly sessionStorageKey: string = 'session';
   private _authState: EventEmitter<boolean> = new EventEmitter();
 
   constructor(
@@ -23,25 +21,23 @@ export class AuthService {
     private readonly _router: Router
   ) { }
 
-  public async loginWithGoogle(googleIdToken: string): Promise<boolean> {
-    const url = `${this._baseUrl}/google-login`;
-    const headers = new HttpHeaders().append('Authorization', `Bearer ${googleIdToken}`);
-    return firstValueFrom(this._http.post<ISession>(url, {}, {headers})
-      .pipe(tap(async authSession => {
-        await this.saveSession(authSession);
+  public async login(requestModel: ILoginRequest): Promise<any> {
+    const url = `${this._baseUrl}/login/`;
+    return firstValueFrom(this._http.post<ILoginResponse>(url, requestModel)
+      .pipe(tap(async res => {
+        const authToken = res.token;
+        await this.saveSession(authToken);
       }))
       .pipe(map(() => {
         return true;
       })));
   }
 
-  public async saveSession(authSession?: ISession): Promise<void> {
-    if (authSession) {
-      await firstValueFrom(this._storage.set(AuthService.tokenStorageKey, authSession.token));
-      await firstValueFrom(this._storage.set(AuthService.sessionStorageKey, authSession));
+  public async saveSession(token?: string): Promise<void> {
+    if (token) {
+      await firstValueFrom(this._storage.set(AuthService.tokenStorageKey, token));
     } else {
       await firstValueFrom(this._storage.delete(AuthService.tokenStorageKey));
-      await firstValueFrom(this._storage.delete(AuthService.sessionStorageKey));
     }
     await this._loadSession();
   }
@@ -50,11 +46,7 @@ export class AuthService {
     const initialStatus = !!this._token;
     const oldToken = this._token;
     this._token = <string>await firstValueFrom(this._storage.get(AuthService.tokenStorageKey));
-    if (this._token) {
-      this._session = <ISession>await firstValueFrom(this._storage.get(AuthService.sessionStorageKey));
-    } else {
-      this._session = undefined;
-    }
+
     const differentStatus = initialStatus !== !!this._token || oldToken !== this._token;
     if (differentStatus) {
       this._authState.emit(!!this._token);
@@ -65,33 +57,24 @@ export class AuthService {
     return {headers: await this.getHeaders(needsAuth)};
   }
 
-  public async hasRole(role: string): Promise<boolean> {
-    const session = await this.getSession();
-    if (!session || !session.role) {
-      return false;
-    }
-
-    return session.role.indexOf(role) !== -1;
-  }
-
   public async getHeaders(needsAuth?: boolean): Promise<HttpHeaders> {
     if (!needsAuth) {
       return new HttpHeaders();
     }
-    const session = await this.getSession();
+    const token = await this.getToken();
 
-    if (!session) {
+    if (!token) {
       return new HttpHeaders();
     }
 
-    return new HttpHeaders().append('Authorization', `${session.tokenType} ${session.token}`);
+    return new HttpHeaders().append('Authorization', `$Bearer ${token}`);
   }
 
-  public async getSession(): Promise<ISession> {
-    if (!this._session) {
-      this._session = <ISession>await firstValueFrom(this._storage.get(AuthService.sessionStorageKey));
+  public async getToken(): Promise<string> {
+    if (!this._token) {
+      this._token = <string>await firstValueFrom(this._storage.get(AuthService.tokenStorageKey));
     }
-    return this._session;
+    return this._token;
   }
 
   public get localAuthState(): boolean {

@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import {MegaMenuItem} from 'primeng/api';
 
 @Component({
   selector: 'app-root',
@@ -6,5 +7,13 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  title = 'inventory-management-frontend';
+  items: MegaMenuItem[];
+
+  constructor() {
+    this.items = [
+      {label: 'Home', routerLink: ['/']},
+      {label: 'Login', routerLink: ['/login']},
+      {label: 'register', routerLink: ['/register']}
+    ];
+  }
 }
