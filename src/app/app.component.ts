@@ -25,6 +25,7 @@ export class AppComponent implements OnInit{
 
     this.items = [
       {label: 'Home', routerLink: ['/']},
+      {label: 'Forms', routerLink: ['/forms'], visible: isLoggedIn},
       {label: 'Logout', command: () => this.logout(), visible: isLoggedIn},
       {label: 'Login', routerLink: ['/login'], visible: !isLoggedIn},
       {label: 'Register', routerLink: ['/register'], visible: !isLoggedIn}

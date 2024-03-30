@@ -1,0 +1,13 @@
+.card-container {
+  display: flex;
+  flex-direction: column;
+  margin-top: 20px;
+  align-items: start;
+  justify-content: center;
+}
+
+app-form-card {
+  height: 250px;
+  width: 650px;
+  margin: 12px 0;
+}

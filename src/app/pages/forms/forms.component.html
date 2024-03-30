@@ -1,0 +1,6 @@
+<div class="card-container">
+  <p-progressSpinner ariaLabel="loading" *ngIf="loading"></p-progressSpinner>
+  <ng-container *ngIf="!loading">
+    <app-form-card *ngFor="let form of forms" [form]="form"></app-form-card>
+  </ng-container>
+</div>
