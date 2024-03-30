@@ -34,8 +34,9 @@ export class LoginComponent {
 
     try {
       await this._authService.login(this.form.value);
-      this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Succesfull' });
+      this._messageService.add({ severity: 'success', summary: 'Success', detail: 'Login Successful' });
       await this._router.navigate(['/']);
+      location.reload();
     } catch {
       this.form.reset();
       this._messageService.add({severity: 'error', summary: 'Error', detail: 'Login error!'});

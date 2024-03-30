@@ -5,6 +5,7 @@ import {Router} from '@angular/router';
 import {ILoginRequest, ILoginResponse} from '../models/login.interface';
 import {firstValueFrom, map, tap} from 'rxjs';
 import {environment} from '../../environments/environment';
+import {IRegisterResponse} from '../models/register.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -31,6 +32,11 @@ export class AuthService {
       .pipe(map(() => {
         return true;
       })));
+  }
+
+  public register(data: any): Promise<any> {
+    const url = `${this._baseUrl}/signup/`;
+    return firstValueFrom(this._http.post<IRegisterResponse>(url, data));
   }
 
   public async saveSession(token?: string): Promise<void> {
