@@ -1,9 +1,12 @@
 <div class="criteria-container">
   <p-progressSpinner ariaLabel="loading" *ngIf="loading"></p-progressSpinner>
-  <ng-container *ngIf="!loading">
+  <ng-container *ngIf="!loading && isLoggedIn">
     <h2>Rezultate finale:</h2>
     <li *ngFor="let criteria of userCriteria">
       {{criteria.criteria_name}}: {{criteria.value}}
     </li>
+  </ng-container>
+  <ng-container *ngIf="!loading && !isLoggedIn">
+    <p>Ai nevoie de un cont!</p>
   </ng-container>
 </div>

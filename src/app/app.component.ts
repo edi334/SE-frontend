@@ -35,5 +35,6 @@ export class AppComponent implements OnInit{
   public async logout(): Promise<void> {
     await this._authService.logout();
     await this._updateMenuItems();
+    location.reload();
   }
 }
