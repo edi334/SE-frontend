@@ -1,8 +1,8 @@
 <div class="question-container">
   <p-progressSpinner ariaLabel="loading" *ngIf="loading"></p-progressSpinner>
   <ng-container *ngIf="!loading">
-    <p>{{questionAndAnswers.question.text}}</p>
-    <div *ngFor="let answer of questionAndAnswers.answers" style="margin-top: 10px">
+    <p class="question-text">{{questionAndAnswers.question.text}}</p>
+    <div *ngFor="let answer of questionAndAnswers.answers" class="answer-text">
       <p-radioButton [inputId]="answer.id.toString()" name="answer" [value]="answer" [(ngModel)]="selectedAnswer"></p-radioButton>
       <label [for]="answer.id.toString()">{{answer.answer.answer}}</label>
     </div>
